@@ -1,0 +1,261 @@
+<html>
+
+<head>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+
+<body>
+
+<nav>
+
+<a href="#home">Home</a>
+<a href="#products">Products</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+<a href="#order">Order</a>
+<a href="#faq">FAQ</a>
+<a href="#checkout">Checkout</a>
+</nav>
+
+<div class="container">
+
+<section id="home">
+	<div class="hero">
+		<div class="hero-text">
+			<h1> Brads Pickles </h1>
+	
+			<p class="tagline">Pickles with a Kick!</p>
+			<p class="subtag">Small-batch, homemade pickles * Local Pickup available</p>
+
+			<a href="https://example.com" class="hero-btn" target="_blank">Order Now</a>
+		</div>
+		
+		<div class="hero-image">
+			<div class="img-placeholder">Pickle Photo</div>
+		</div>
+	</div>
+
+</section>
+
+<section id="order">
+	<h2> How to Order </h2>
+	<p> Message Brad with what flavor you want and how many jars. Local pickup available. </p>
+
+</section>
+
+<section id="products">
+	<h2>Products</h2>
+	
+	<div class="product-grid">
+		<div class="product" data-price="6.00">
+		<h3>Ghost Pickle</h3>
+		<p>This pickle will sneak up on you with its Ghost pepper flavor!</p>
+		<p class="price">$6.00</p>
+		
+		<label>
+			Qty:
+				<input type="number" class="qty" value="1" min="1">
+		</label>
+
+		<button type="button" class="order-btn">Add to Order</button>
+		</div>
+
+		<div class="product" data-price="7.00">
+		<h3>Garlic Pickle</h3>
+		<p>Keep vampires away with this Garlic soaked pickle!</p>
+		<p class="price">$7.00</p>
+		
+		<label>
+			Qty:
+				<input type="number" class="qty" value="1" min="1">
+		</label>
+
+		<button type="button" class="order-btn">Add to Order</button>
+		</div>
+
+		<div class="product" data-price="8.00">
+		<h3>Habenaro Pickle</h3>
+		<p>Perfect pickle for a little fire breath!</p>
+		<p class="price">$8.00</p>
+		
+		<label>
+			Qty:
+				<input type="number" class="qty" value="1" min="1">
+		</label>
+
+		<button type="button" class="order-btn">Add to Order</button>
+		</div>
+	</div>
+</section>
+
+<section id="order-total">
+	<h2>Your Order</h2>
+	
+	<ul id="order-items"></ul>
+
+	<p class="order-total-line"> Total: $<span id="total">0.00</span></p>
+
+	<button id="clear-order" type="button">Clear Order</button>
+</section>
+
+<section id="checkout">
+	<h2>Checkout (Demo)</h2>
+
+	<p>This is a placeholder for the future online ordering system.</p>
+
+	<button id="checkout-btn">Complete Order</button>
+
+	<p id="confirm-msg"></p>
+</section>
+
+<section  id="about">
+	<h2>About Me</h2>
+
+	<p> Been the pickle pimp for 100 years! love my beard and my wife!
+</section>
+
+<section id="faq">
+	<h2>FAQ</h2>
+
+	<div class="faq-item">
+		<h3>Do you ship?</h3>
+		<p>Not yet. Local pickup is available.</p>
+	</div>
+
+	<div class="faq-item">
+		<h3>how much are the jars?</h3>
+		<p>Pricing does vary by flacor. You can message Brad for current prices.</p>
+	</div>
+	<div class="faq-item">
+		<h3>How do I order?</h3>
+		<p>Use the Order button or DM Brad with the flavor and quantity.</p>
+	</div>
+
+</section>
+
+<section id="contact">
+	<h2>DM Brad</h2>
+	<a href=mailto:brad@example.com>Email Brad</a>
+
+</section>
+
+</div>
+
+<script>
+	const btn = document.getElementById("checkout-btn");
+	const msg = document.getElementById("confirm-msg");
+
+let raining = false;
+
+function pickleRain(count) {
+
+	for (let i = 0; i < count; i++) {
+	const p = document.createElement("div");
+		p.textContent = "🥒";
+		p.style.position = "fixed";
+		p.style.top = "-40px";
+		p.style.left = (Math.random() * 100) + "vw";
+		p.style.fontSize = "40px";
+		p.style.pointerEvents = "none";
+		p.style.zIndex = "99999";
+		p.style.transition = "transform 1.2s ease, opacity 1.2s ease";
+		document.body.appendChild(p);
+
+	requestAnimationFrame(() => {
+		p.style.transform = "translateY(88vh) rotate(220deg)";
+		p.style.opacity = "1";
+
+	setTimeout(() => {
+		p.style.transform = "translateY(95vh) rotate(260deg)";
+		p.style.opacity = "0";
+		}, 900);
+});	
+		
+		setTimeout(() => p.remove(), 1400);
+	}
+}
+
+	btn.addEventListener("click", () => {
+		if (raining) return;
+		raining = true;
+		msg.textContent = "Order confirmed! Thanks for choosing Brad's Pickles.";
+		pickleRain(10);
+	setTimeout(() => {
+	raining = false;
+	}, 1500);
+});
+
+</script>
+
+<script>
+
+	let total = 0;
+
+	const order =[]; //array of { name, qty, price}
+
+	const totalSpan = document.getElementById("total");
+	
+	const orderItems = document.getElementById("order-items");
+	
+	const clearBtn = document.getElementById("clear-order");
+	
+	const buttons = document.querySelectorAll(".order-btn");
+
+	function renderOrder() {
+		orderItems.innerHTML = "";
+
+		order.forEach((item) => {
+			const li = document.createElement("li");
+			const lineTotal = item.price * item.qty;
+			li.textContent = `${item.name} - Qty: ${item.qty} - $${lineTotal.toFixed(2)}`;
+			orderItems.appendChild(li);
+		});
+		
+		totalSpan.textContent = total.toFixed(2);
+	}
+
+	buttons.forEach((btn) => {
+		btn.addEventListener("click", (e) => {
+			e.preventDefault();
+
+			const product = btn.closest(".product");
+
+			const name = product.querySelector("h3").textContent;
+
+			const price = parseFloat(product.dataset.price);
+
+			const qtyInput = product.querySelector(".qty");
+
+			const qty = Number(qtyInput.value);
+	
+			order.push({ name, qty, price });
+
+			total += price * qty;
+			
+			renderOrder();
+		});
+	});
+
+	clearBtn.addEventListener("click", () => {
+		total = 0;
+		order.length = 0;
+		renderOrder();
+	});
+	
+	renderOrder();
+</script>
+
+<footer>
+
+	<p>© 2026 Brad's Pickls | Small-batch, homemade goodness.</p>
+	<p> Website built by Wyatt</p>
+
+</footer>
+
+</body>
+
+</html>
