@@ -14,11 +14,11 @@
 
 <a href="#home">Home</a>
 <a href="#products">Products</a>
+<a href="#order">Order</a>
+<a href="#checkout">Checkout</a>
 <a href="#about">About</a>
 <a href="#contact">Contact</a>
-<a href="#order">Order</a>
 <a href="#faq">FAQ</a>
-<a href="#checkout">Checkout</a>
 </nav>
 
 <div class="container">
@@ -26,7 +26,10 @@
 <section id="home">
 	<div class="hero">
 		<div class="hero-text">
-			<h1> Brads Pickles </h1>
+			<div class="logo-container">
+				<img src="Pickle.png" alt="Sanders Pickles Logo" class="logo">
+				
+			</div>
 	
 			<p class="tagline">Pickles with a Kick!</p>
 			<p class="subtag">Small-batch, homemade pickles * Local Pickup available</p>
@@ -166,16 +169,34 @@ function pickleRain(count) {
 		document.body.appendChild(p);
 
 	requestAnimationFrame(() => {
-		p.style.transform = "translateY(88vh) rotate(220deg)";
-		p.style.opacity = "1";
+		p.style.transform = "translateY(92vh) rotate(220deg)";
+		});
 
 	setTimeout(() => {
-		p.style.transform = "translateY(95vh) rotate(260deg)";
-		p.style.opacity = "0";
-		}, 900);
-});	
+		p.style.transition = "transform 0.35s ease-out";
+		p.style.transform = "translateY(84vh) rotate(240deg)";
+		}, 950);
+
+	setTimeout(() => {
+		p.style.transition = "transform 0.35s ease-in";
+		p.style.transform = "translateY(92vh) rotate(260deg)";
+		}, 1300);
+
+	setTimeout(() => {
+		p.style.transition = "transform 0.28s ease-out";
+		p.style.transform = "translateY(88vh) rotate(280deg)";
+		}, 1600);
+
+	setTimeout(() => {
+		p.style.transition = "transform 0.35s ease-in";
+		p.style.transform = "translateY(92vh) rotate(300deg)";
+		}, 1880);	
 		
-		setTimeout(() => p.remove(), 1400);
+	setTimeout(() => {
+		p.style.transition = "transform 0.6s ease, opacity 0.6s ease";
+		p.style.transform = "translateY(110vh) rotate(340deg)";
+		p.style.opacity = "0";
+		}, 2150);	
 	}
 }
 
@@ -197,6 +218,14 @@ function pickleRain(count) {
 
 	const order =[]; //array of { name, qty, price}
 
+	const savedCart = localStorage.getItem("cart");
+
+	if (savedCart) {
+		const parsed = JSON.parse(savedCart);
+		total = parsed.total;
+		order.push(...parsed.order);
+	}
+
 	const totalSpan = document.getElementById("total");
 	
 	const orderItems = document.getElementById("order-items");
@@ -213,6 +242,7 @@ function pickleRain(count) {
 			const lineTotal = item.price * item.qty;
 			li.textContent = `${item.name} - Qty: ${item.qty} - $${lineTotal.toFixed(2)}`;
 			orderItems.appendChild(li);
+			localStorage.setItem("cart", JSON.stringify({ total, order}));
 		});
 		
 		totalSpan.textContent = total.toFixed(2);
@@ -231,8 +261,14 @@ function pickleRain(count) {
 			const qtyInput = product.querySelector(".qty");
 
 			const qty = Number(qtyInput.value);
-	
-			order.push({ name, qty, price });
+
+			const existingItem = order.find(item => item.name === name);
+
+			if (existingItem) {
+				existingItem.qty += qty;
+			} else {
+				order.push({ name, qty, price });
+			}
 
 			total += price * qty;
 			
@@ -243,6 +279,7 @@ function pickleRain(count) {
 	clearBtn.addEventListener("click", () => {
 		total = 0;
 		order.length = 0;
+		localStorage.removeItem("cart");
 		renderOrder();
 	});
 	
